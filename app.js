@@ -9,6 +9,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const port = 3000;
 
+
 // MySQL connection
 const db = mysql.createConnection({
     host: 'testdb-1.cp24ccc4chcf.ap-southeast-1.rds.amazonaws.com',
