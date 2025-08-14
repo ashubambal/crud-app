@@ -9,41 +9,39 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const port = 3000;
 
-// Create connection to MySQL
+// MySQL connection
 const db = mysql.createConnection({
     host: 'testdb-1.cp24ccc4chcf.ap-southeast-1.rds.amazonaws.com',
     user: 'root',
     password: 'KalyaniAshu121224',
-    database: 'testdb-1'
+    database: 'testdb1' // ✅ Use actual DB name, avoid using instance ID
 });
 
 // Connect to MySQL
 db.connect((err) => {
-    if (err) {
-        throw err;
-    }
+    if (err) throw err;
     console.log('MySQL Connected...');
 });
 
-// Serve the HTML file
+// Serve frontend
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Create a table
+// Create table
 app.get('/createTable', (req, res) => {
-    let sql = 'CREATE TABLE IF NOT EXISTS items(id int AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))';
-    db.query(sql, (err, result) => {
+    let sql = 'CREATE TABLE IF NOT EXISTS items(id INT AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))';
+    db.query(sql, (err) => {
         if (err) throw err;
         res.send('Items table created...');
     });
 });
 
-// Insert an item
+// Add item
 app.post('/addItem', (req, res) => {
     let item = { name: req.body.name };
     let sql = 'INSERT INTO items SET ?';
-    db.query(sql, item, (err, result) => {
+    db.query(sql, item, (err) => {
         if (err) throw err;
         res.send('Item added...');
     });
@@ -58,34 +56,92 @@ app.get('/getItems', (req, res) => {
     });
 });
 
-// Get a single item by ID
+// Get item by ID
 app.get('/getItem/:id', (req, res) => {
-    let sql = `SELECT * FROM items WHERE id = ${req.params.id}`;
-    db.query(sql, (err, result) => {
+    let sql = `SELECT * FROM items WHERE id = ?`;
+    db.query(sql, [req.params.id], (err, result) => {
         if (err) throw err;
         res.json(result);
     });
 });
 
-// Update an item
+// Update item
 app.put('/updateItem/:id', (req, res) => {
-    let newName = req.body.name;
     let sql = `UPDATE items SET name = ? WHERE id = ?`;
-    db.query(sql, [newName, req.params.id], (err, result) => {
+    db.query(sql, [req.body.name, req.params.id], (err) => {
         if (err) throw err;
         res.send('Item updated...');
     });
 });
 
-// Delete an item
+// Delete item
 app.delete('/deleteItem/:id', (req, res) => {
     let sql = `DELETE FROM items WHERE id = ?`;
-    db.query(sql, [req.params.id], (err, result) => {
+    db.query(sql, [req.params.id], (err) => {
         if (err) throw err;
         res.send('Item deleted...');
     });
 });
 
+
+// 🔹 NEW FEATURES 🔹
+
+// 1. Search items by name
+app.get('/search/:name', (req, res) => {
+    let sql = `SELECT * FROM items WHERE name LIKE ?`;
+    db.query(sql, [`%${req.params.name}%`], (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
+// 2. Count total items
+app.get('/countItems', (req, res) => {
+    let sql = `SELECT COUNT(*) AS total FROM items`;
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        res.json(result[0]);
+    });
+});
+
+// 3. Get items with pagination
+app.get('/itemsPage', (req, res) => {
+    let page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 5;
+    let offset = (page - 1) * limit;
+
+    let sql = `SELECT * FROM items LIMIT ? OFFSET ?`;
+    db.query(sql, [limit, offset], (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
+// 4. Delete all items
+app.delete('/clearItems', (req, res) => {
+    let sql = `DELETE FROM items`;
+    db.query(sql, (err) => {
+        if (err) throw err;
+        res.send('All items deleted...');
+    });
+});
+
+// 5. Sort items
+app.get('/sortItems/:field', (req, res) => {
+    let field = req.params.field;
+    if (!['id', 'name'].includes(field)) {
+        return res.status(400).send('Invalid sort field');
+    }
+    let sql = `SELECT * FROM items ORDER BY ${field} ASC`;
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
+
+// Start server
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
+
