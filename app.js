@@ -14,7 +14,7 @@ const db = mysql.createConnection({
     host: 'testdb-1.cp24ccc4chcf.ap-southeast-1.rds.amazonaws.com',
     user: 'root',
     password: 'KalyaniAshu121224',
-    database: 'testdb1' // ✅ Use actual DB name, avoid using instance ID
+    database: 'testdb-1' // ✅ Use actual DB name, avoid using instance ID
 });
 
 // Connect to MySQL
