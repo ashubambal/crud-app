@@ -6,8 +6,6 @@ A simple CRUD (Create, Read, Update, Delete) Node.js application with MySQL data
 
 ## 📋 Project Setup Guide
 
----
-
 ### 1. 🚀 Launch an EC2 Instance (Ubuntu)
 
 - Create an EC2 instance using **Ubuntu (Free Tier)**
@@ -94,13 +92,12 @@ A simple CRUD (Create, Read, Update, Delete) Node.js application with MySQL data
 - Go to:
 - Manage Jenkins → Credentials → System → Global credentials → Add Credentials
 - Add the following:
-  ```bash
+```
 | ID            | Type                | Use                       |
 | ------------- | ------------------- | ------------------------- |
 | `sonar-token` | Secret text         | SonarCloud authentication |
 | `docker-cred` | Username + Password | DockerHub login           |
-  ```
-
+```  
 ---
 
 ### 9. ⚙️ Configure SonarQube in Jenkins
@@ -110,7 +107,6 @@ A simple CRUD (Create, Read, Update, Delete) Node.js application with MySQL data
 - SonarQube Scanner:
     - Name: SonarCloud
     - SonarQube Servers:
-
 - Name: SonarCloud
     - URL: https://sonarcloud.io
     - Credentials: sonar-token
