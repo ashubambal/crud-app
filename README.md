@@ -84,6 +84,7 @@ A simple CRUD (Create, Read, Update, Delete) Node.js application with MySQL data
 - Organization name: Jenkins
 - Click: "Create organization"
 - Create a Sonar Token (keep it safe)
+    - Step two create sonar token -> Click on My-account -> Security -> Ganrate token
 
 ---
 
@@ -104,21 +105,25 @@ A simple CRUD (Create, Read, Update, Delete) Node.js application with MySQL data
 
 - Go to:
 - Manage Jenkins → Global Tool Configuration
-- SonarQube Scanner:
+- SonarQube Scanner installations:
+    - Name: sonar-scanar
+    - Version: select appropriate version -> save
+
+ - Go to:
+- Manage Jenkins → System   
+- SonarQube servers:
     - Name: SonarCloud
-    - SonarQube Servers:
-- Name: SonarCloud
+    - Select Environment Variable check box
     - URL: https://sonarcloud.io
-    - Credentials: sonar-token
+    - Credentials: sonar-token -> save
 
 ---
 
 ### 10. 🚀 Create Jenkins Pipeline
 
-- Create a new Pipeline job
-- Use GitHub as source
-- Add webhook support
-- Use the Jenkinsfile from the repo for pipeline configuration
+- Create a new item (ci-jenkins) -> pipeline -> click on check box (GitHub hook trigger for GITScm polling)
+- Pipeline (Pipeline script from SCM) -> Use GitHub as source -> save
+- Add webhook support -> Go to Github Repo settings -> Webhooks -> http://<EC2-IP>:8080/github-webhook/ -> Content type * (appliation/json) -> save
 
 ---
 
