@@ -106,10 +106,9 @@ A simple CRUD (Create, Read, Update, Delete) Node.js application with MySQL data
 - Go to:
 - Manage Jenkins → Global Tool Configuration
 - SonarQube Scanner installations:
-    - Name: sonar-scanar
+    - Name: sonar-scanner
     - Version: select appropriate version -> save
-
- - Go to:
+- Go to:
 - Manage Jenkins → System   
 - SonarQube servers:
     - Name: SonarCloud
