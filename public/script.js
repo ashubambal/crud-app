@@ -1,7 +1,8 @@
 function createTable() {
     fetch('/createTable')
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => updateResult(data))
+        .catch(showError);
 }
 
 function addItem() {
@@ -13,22 +14,27 @@ function addItem() {
         body: JSON.stringify({ name })
     })
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => updateResult(data))
+        .catch(showError);
 }
 
 function getItems() {
     fetch('/getItems')
         .then(res => res.json())
         .then(data => {
-            const resultDiv = document.getElementById('result');
             if (!data.length) {
-                resultDiv.innerHTML = "No items found.";
+                updateResult('No items found.');
                 return;
             }
-            resultDiv.innerHTML = data.map(item =>
-                `ID: ${item.id} | Name: ${item.name}`
-            ).join("\n");
-        });
+            let table = `<table>
+                            <tr><th>ID</th><th>Name</th></tr>`;
+            data.forEach(item => {
+                table += `<tr><td>${item.id}</td><td>${item.name}</td></tr>`;
+            });
+            table += `</table>`;
+            document.getElementById('result').innerHTML = table;
+        })
+        .catch(showError);
 }
 
 function updateItem() {
@@ -41,7 +47,8 @@ function updateItem() {
         body: JSON.stringify({ name })
     })
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => updateResult(data))
+        .catch(showError);
 }
 
 function deleteItem() {
@@ -49,6 +56,14 @@ function deleteItem() {
     if (!id) return;
     fetch(`/deleteItem/${id}`, { method: 'DELETE' })
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => updateResult(data))
+        .catch(showError);
 }
 
+function updateResult(message) {
+    document.getElementById('result').innerHTML = `<p>${message}</p>`;
+}
+
+function showError(err) {
+    document.getElementById('result').innerHTML = `<p style="color:red;">Error: ${err}</p>`;
+}
