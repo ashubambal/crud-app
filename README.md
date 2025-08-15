@@ -162,7 +162,7 @@ crud-app/
 ## Website UI and Operation
 
 <p align="center">
-  <img src="assets/output.gif" alt="Demo" width="700">
+  <img src="assets/recording.gif" alt="Demo" width="700">
 </p>
 
 
