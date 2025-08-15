@@ -1,3 +1,5 @@
+require('dotenv').config(); // Load environment variables from .env
+
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -7,20 +9,29 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Validate environment variables
+if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
+    console.error("❌ Missing one or more required DB environment variables.");
+    process.exit(1);
+}
 
 // MySQL connection
 const db = mysql.createConnection({
-    host: 'testdb-1.cp24ccc4chcf.ap-southeast-1.rds.amazonaws.com',
-    user: 'root',
-    password: 'KalyaniAshu121224',
-    database: 'testdb-1' // ✅ Use actual DB name, avoid using instance ID
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 // Connect to MySQL
 db.connect((err) => {
-    if (err) throw err;
-    console.log('MySQL Connected...');
+    if (err) {
+        console.error("❌ MySQL connection failed:", err);
+        process.exit(1);
+    }
+    console.log('✅ MySQL Connected...');
 });
 
 // Serve frontend
@@ -33,7 +44,7 @@ app.get('/createTable', (req, res) => {
     let sql = 'CREATE TABLE IF NOT EXISTS items(id INT AUTO_INCREMENT, name VARCHAR(255), PRIMARY KEY(id))';
     db.query(sql, (err) => {
         if (err) throw err;
-        res.send('Items table created...');
+        res.send('✅ Items table created...');
     });
 });
 
@@ -43,7 +54,7 @@ app.post('/addItem', (req, res) => {
     let sql = 'INSERT INTO items SET ?';
     db.query(sql, item, (err) => {
         if (err) throw err;
-        res.send('Item added...');
+        res.send('✅ Item added...');
     });
 });
 
@@ -70,7 +81,7 @@ app.put('/updateItem/:id', (req, res) => {
     let sql = `UPDATE items SET name = ? WHERE id = ?`;
     db.query(sql, [req.body.name, req.params.id], (err) => {
         if (err) throw err;
-        res.send('Item updated...');
+        res.send('✅ Item updated...');
     });
 });
 
@@ -79,10 +90,9 @@ app.delete('/deleteItem/:id', (req, res) => {
     let sql = `DELETE FROM items WHERE id = ?`;
     db.query(sql, [req.params.id], (err) => {
         if (err) throw err;
-        res.send('Item deleted...');
+        res.send('✅ Item deleted...');
     });
 });
-
 
 // 🔹 NEW FEATURES 🔹
 
@@ -122,7 +132,7 @@ app.delete('/clearItems', (req, res) => {
     let sql = `DELETE FROM items`;
     db.query(sql, (err) => {
         if (err) throw err;
-        res.send('All items deleted...');
+        res.send('✅ All items deleted...');
     });
 });
 
@@ -130,7 +140,7 @@ app.delete('/clearItems', (req, res) => {
 app.get('/sortItems/:field', (req, res) => {
     let field = req.params.field;
     if (!['id', 'name'].includes(field)) {
-        return res.status(400).send('Invalid sort field');
+        return res.status(400).send('❌ Invalid sort field');
     }
     let sql = `SELECT * FROM items ORDER BY ${field} ASC`;
     db.query(sql, (err, results) => {
@@ -139,9 +149,8 @@ app.get('/sortItems/:field', (req, res) => {
     });
 });
 
-
 // Start server
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+    console.log(`🚀 Server started on http://localhost:${port}`);
 });
 
