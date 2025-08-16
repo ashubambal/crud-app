@@ -8,25 +8,25 @@ on:
 
 jobs:
 # ---------------- SonarCloud Code Analysis ----------------
-code-analysis:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0   # 👈 Important for SonarCloud to get branch history
-
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      with:
-        args: >
-          -Dsonar.organization=jenkins-projects-cicd
-          -Dsonar.projectKey=jenkins-projects-cicd_crud-app
-          -Dsonar.sources=.
-          -Dsonar.branch.name=main
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Provided automatically by GitHub
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     # You stored this in Codespaces/GitHub secrets
+  code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 👈 Important for SonarCloud to get branch history
+  
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=jenkins-projects-cicd
+            -Dsonar.projectKey=jenkins-projects-cicd_crud-app
+            -Dsonar.sources=.
+            -Dsonar.branch.name=main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Provided automatically by GitHub
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     # You stored this in Codespaces/GitHub secrets
 
   # ---------------- Docker Build & Push ----------------
   docker-build-push:
