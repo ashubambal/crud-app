@@ -29,10 +29,10 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
-          -Dsonar.organization=jenkins-projects-cicd
-          -Dsonar.projectKey=jenkins-projects-cicd
-          -Dsonar.sources=.
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.organization=jenkins-projects-cicd
+            -Dsonar.projectKey=jenkins-projects-cicd
+            -Dsonar.sources=.
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
