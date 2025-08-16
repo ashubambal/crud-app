@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK (if needed for sonar-scanner)
+      - name: Set up JDK (needed for sonar-scanner)
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
@@ -25,15 +25,21 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=jenkins-projects-cicd
-            -Dsonar.projectKey=jenkins-projects-cicd
-            -Dsonar.sources=.
+      - name: Install Sonar Scanner
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+          mv sonar-scanner-5.0.1.3006-linux sonar-scanner
+
+      - name: Run Sonar Scanner
+        run: |
+          ./sonar-scanner/bin/sonar-scanner \
+            -Dsonar.organization=jenkins-projects-cicd \
+            -Dsonar.projectKey=jenkins-projects-cicd \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${SONAR_TOKEN}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   docker-build-push:
