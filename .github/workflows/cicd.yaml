@@ -19,7 +19,7 @@ jobs:
         with:
           args: >
             -Dsonar.organization=jenkins
-            -Dsonar.projectKey=jenkins-projects-cicd_crud-app
+            -Dsonar.projectKey=jenkins-projects-cicd
             -Dsonar.sources=.
             -Dsonar.branch.name=main
         env:
