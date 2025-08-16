@@ -4,7 +4,8 @@
   "description": "A simple Node.js app for CRUD operations with MySQL",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jest --coverage"
   },
   "keywords": [
     "nodejs",
@@ -20,7 +21,4 @@
     "mysql": "^2.18.1",
     "dotenv": "^16.3.1"
   }
- "scripts": {
-  "test": "jest --coverage"
-}
 }
