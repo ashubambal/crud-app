@@ -13,15 +13,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 👈 Needed for better relevancy in Sonar analysis
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'   # adjust if you’re using another version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.organization=ashubambal
-            -Dsonar.projectKey=ashubambal_crud-app
-            -Dsonar.sources=.
-            -Dsonar.branch.name=main
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Auto-provided by GitHub
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     # Must be created in SonarCloud & added in repo secrets
