@@ -19,19 +19,14 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Cache SonarCloud Package
+      - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Install Sonar Scanner
-        run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner-cli-5.0.1.3006-linux.zip
-          mv sonar-scanner-5.0.1.3006-linux sonar-scanner
-
+      # ✅ Use SonarSource official action only (no manual scanner install)
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
@@ -40,7 +35,6 @@ jobs:
             -Dsonar.projectKey=jenkins-projects-cicd_crud-app
             -Dsonar.sources=.
             -Dsonar.branch.name=main
-            -Dsonar.host.url=https://sonarcloud.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -79,4 +73,3 @@ jobs:
             docker rm -f $(docker ps -q) || true
             docker pull softconsist/crud-123:latest
             docker run -d -p 3000:3000 softconsist/crud-123:latest
-
