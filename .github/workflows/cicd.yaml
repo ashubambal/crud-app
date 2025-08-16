@@ -4,39 +4,38 @@ on:
   push:
     branches: ["main"]
   pull_request:
-  workflow_dispatch:   # 👈 allows manual trigger
+  workflow_dispatch:
 
 jobs:
-  # ---------------- SonarCloud Code Analysis ----------------
+  # ---------------- SonarCloud + Tests ----------------
   code-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # 👈 Needed for better relevancy in Sonar analysis
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'   # adjust if you’re using another version
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests with coverage
+      - name: Run Tests with Coverage
         run: npm test -- --coverage
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=ashubambal
+            -Dsonar.projectKey=ashubambal_crud-app
+            -Dsonar.sources=.
+            -Dsonar.branch.name=main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Auto-provided by GitHub
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     # Must be created in SonarCloud & added in repo secrets
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # ---------------- Docker Build & Push ----------------
   docker-build-push:
     runs-on: ubuntu-latest
-    needs: code-analysis   # Run only if analysis succeeds
+    needs: code-analysis
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,7 +56,7 @@ jobs:
   # ---------------- Deploy to EC2 ----------------
   deploy-ec2:
     runs-on: ubuntu-latest
-    needs: docker-build-push   # Run only after Docker push succeeds
+    needs: docker-build-push
     steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.0
