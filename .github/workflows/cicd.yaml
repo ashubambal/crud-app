@@ -35,7 +35,7 @@ jobs:
       - name: Run Sonar Scanner
         run: |
           ./sonar-scanner/bin/sonar-scanner \
-            -Dsonar.organization=jenkins-projects-cicd \
+            -Dsonar.organization=jenkins \
             -Dsonar.projectKey=jenkins-projects-cicd \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
