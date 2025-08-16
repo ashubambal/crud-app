@@ -12,21 +12,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK (If nedded for sonar-scanner)
-        uses: actions/setup-java@v4   # ❌ should be `actions/setup-java@v4`
+      - name: Set up JDK (if needed for sonar-scanner)
+        uses: actions/setup-java@v4
         with:
-          distribution: "temurin"   # ❌ typo, should be `distribution`
+          distribution: "temurin"
           java-version: "17"
 
       - name: Cache SonarCloud Package
-        uses: actions/cache@v4   # ❌ should be `actions/cache@v4`
+        uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar   # ❌ should be `${{ runner.os }}` (spaces around variable)
-          restore-keys: ${{ runner-os }}-sonar   # ❌ should be `${{ runner.os }}-sonar`
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master   # ❌ should be `SonarSource/sonarcloud-github-action@master`
+        uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
             -Dsonar.organization=jenkins-projects-cicd
@@ -47,7 +47,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }} 
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -65,9 +65,9 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ sectrets.EC2_SSH_KEY }}   # ❌ typo: should be `${{ secrets.EC2_SSH_KEY }}`
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             docker rm -f $(docker ps -q) || true
             docker pull softconsist/crud-123:latest
-            docker run -d -p 3000:3000 softconsist/crud-123:latest   # ❌ indentation error, this should be under script block
+            docker run -d -p 3000:3000 softconsist/crud-123:latest
 
