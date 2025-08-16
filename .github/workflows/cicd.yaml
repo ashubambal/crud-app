@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "develop", "feature/*"]  # Trigger on main, develop, or any feature branch
   pull_request:
   workflow_dispatch:
 
@@ -27,7 +27,7 @@ jobs:
             -Dsonar.organization=ashubambal
             -Dsonar.projectKey=ashubambal_crud-app
             -Dsonar.sources=.
-            -Dsonar.branch.name=main
+            -Dsonar.branch.name=${{ github.ref_name }}  # Automatically use the branch that triggered the workflow
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
