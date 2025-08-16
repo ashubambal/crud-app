@@ -70,5 +70,5 @@ jobs:
           script: |
             docker rm -f $(docker ps -q) || true
             docker pull softconsist/crud-123:latest
-          docker run -d -p 3000:3000 softconsist/crud-123:latest   # ❌ indentation error, this should be under script block
+            docker run -d -p 3000:3000 softconsist/crud-123:latest   # ❌ indentation error, this should be under script block
 
