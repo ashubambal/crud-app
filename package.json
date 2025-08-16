@@ -20,4 +20,7 @@
     "mysql": "^2.18.1",
     "dotenv": "^16.3.1"
   }
+ "scripts": {
+  "test": "jest --coverage"
+}
 }
