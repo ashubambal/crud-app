@@ -18,8 +18,8 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
-            -Dsonar.organization=jenkins
-            -Dsonar.projectKey=jenkins-projects-cicd
+            -Dsonar.organization=jenkins-projects-cicd
+            -Dsonar.projectKey=jenkins-projects-cicd_crud-app
             -Dsonar.sources=.
             -Dsonar.branch.name=main
         env:
