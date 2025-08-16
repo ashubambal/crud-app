@@ -1,0 +1,74 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  code-analysis:
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK (If nedded for sonar-scanner)
+        uses: actions/setup-java@4
+        with:
+          distribuion: "temurin"
+          java-version: "17"
+
+      - name: Cache SonarCloud Package
+        uses: actions@cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{runner.os}}-sonar
+          restore-keys: ${{runner-os}}-sonar
+
+      - name: SonarCloud Scan
+        uses: SonarCloud/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=jenkins-projects-cicd
+            -Dsonar.projectKey=jenkins-projects-cicd
+            -Dsonar.sources=.
+        env:
+          SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  docker-build-push:
+    runs-on: ubuntu-latest
+    needs: code-analysis
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}} 
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: softconsist/crud-123:latest
+
+  deploy-ec2:
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USER}}
+          key: ${{sectrets.EC2_SSH_KEY}}
+          script: |
+            docker rm -f $(docker ps -q) || true
+            docker pull softconsist/crud-123:latest
+          docker run -d -p 3000:3000 softconsist/crud-123:latest
+
+            
