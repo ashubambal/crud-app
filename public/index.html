@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD Operations</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📚 Library Management</title>
+
+  <!-- ✅ Bootstrap CSS (must be first in head) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
+  <!-- Your Custom Styles -->
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <h1>✨ CRUD Operations</h1>
-    <div class="btn-container">
-        <button class="btn-create" onclick="createTable()">🛠 Create Table</button>
-        <button class="btn-add" onclick="addItem()">➕ Add Item</button>
-        <button class="btn-get" onclick="getItems()">📋 Get Items</button>
-        <button class="btn-update" onclick="updateItem()">✏ Update Item</button>
-        <button class="btn-delete" onclick="deleteItem()">🗑 Delete Item</button>
-    </div>
+  <h1>📚 Library Management System</h1>
 
-    <div id="result">Results will appear here...</div>
+  <div class="btn-container">
+    <button class="btn-create" onclick="createTable()">🛠 Create Books Table</button>
+    <button class="btn-dummy" onclick="insertDummyBooks()">📥 Insert Dummy Books</button>
+    <button class="btn-add" onclick="addBook()">➕ Add Book</button>
+    <button class="btn-get" onclick="getBooks()">📋 View Books</button>
+    <button class="btn-update" onclick="updateBook()">✏ Update Book</button>
+    <button class="btn-delete" onclick="deleteBook()">🗑 Delete Book</button>
+    <button class="btn-clear" onclick="clearBooks()">🔥 Clear All</button>
+  </div>
 
-    <script src="script.js"></script>
+  <div id="result">Results will appear here...</div>
+
+  <!-- ✅ SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Your Custom Script -->
+  <script src="script.js"></script>
 </body>
 </html>
 
