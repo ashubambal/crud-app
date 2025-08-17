@@ -1,14 +1,15 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #f6d365, #fda085, #84fab0, #8fd3f4);
     background-size: 400% 400%;
-    animation: gradientShift 10s ease infinite;
+    animation: gradientShift 12s ease infinite;
     margin: 0;
     padding: 0;
     color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
 }
 
 @keyframes gradientShift {
@@ -18,51 +19,55 @@ body {
 }
 
 h1 {
-    margin-top: 20px;
+    margin-top: 30px;
+    font-size: 2em;
+    color: #222;
     text-shadow: 1px 1px 4px rgba(255,255,255,0.6);
 }
 
 .btn-container {
     margin-top: 20px;
     display: flex;
-    gap: 15px;
     flex-wrap: wrap;
+    gap: 12px;
     justify-content: center;
 }
 
 button {
     border: none;
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 12px 18px;
+    font-size: 15px;
     color: white;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
 
-/* Bright button colors */
 .btn-create { background: #ff7e67; }
+.btn-dummy  { background: #ffa726; }
 .btn-add    { background: #28c76f; }
 .btn-get    { background: #00cfe8; }
 .btn-update { background: #7367f0; }
 .btn-delete { background: #ea5455; }
+.btn-clear  { background: #6c757d; }
 
 button:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.3);
 }
 
 #result {
     margin-top: 30px;
-    padding: 15px;
-    background: rgba(255,255,255,0.8);
-    border-radius: 10px;
-    width: 80%;
-    max-width: 600px;
-    min-height: 100px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    min-height: 120px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.1);
     overflow-x: auto;
     white-space: pre-wrap;
+    font-family: monospace;
 }
 

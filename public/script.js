@@ -1,54 +1,86 @@
 function createTable() {
     fetch('/createTable')
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => displayResult(data));
 }
 
-function addItem() {
-    const name = prompt('Enter item name:');
-    if (!name) return;
-    fetch('/addItem', {
+function insertDummyBooks() {
+    fetch('/insertDummyBooks')
+        .then(res => res.text())
+        .then(data => displayResult(data));
+}
+
+function addBook() {
+    const title = prompt('Book title:');
+    const author = prompt('Author name:');
+    const genre = prompt('Genre:');
+    const year_published = parseInt(prompt('Year published:'), 10);
+    const isbn = prompt('ISBN:');
+    const available_copies = parseInt(prompt('Available copies:'), 10);
+
+    if (!title || !author) return alert("Title and author are required.");
+
+    const book = { title, author, genre, year_published, isbn, available_copies };
+
+    fetch('/addBook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
+        body: JSON.stringify(book)
     })
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => displayResult(data));
 }
 
-function getItems() {
-    fetch('/getItems')
+function getBooks() {
+    fetch('/getBooks')
         .then(res => res.json())
         .then(data => {
-            const resultDiv = document.getElementById('result');
-            if (!data.length) {
-                resultDiv.innerHTML = "No items found.";
-                return;
-            }
-            resultDiv.innerHTML = data.map(item =>
-                `ID: ${item.id} | Name: ${item.name}`
-            ).join("\n");
+            if (!data.length) return displayResult("No books found.");
+            const result = data.map(b => 
+                `📖 [${b.id}] "${b.title}" by ${b.author} (${b.year_published})\nGenre: ${b.genre} | ISBN: ${b.isbn} | Copies: ${b.available_copies}`
+            ).join("\n\n");
+            displayResult(result);
         });
 }
 
-function updateItem() {
-    const id = prompt('Enter item ID to update:');
-    const name = prompt('Enter new item name:');
-    if (!id || !name) return;
-    fetch(`/updateItem/${id}`, {
+function updateBook() {
+    const id = prompt('Enter book ID to update:');
+    if (!id) return;
+
+    const title = prompt('New title:');
+    const author = prompt('New author:');
+    const genre = prompt('New genre:');
+    const year_published = parseInt(prompt('New year published:'), 10);
+    const isbn = prompt('New ISBN:');
+    const available_copies = parseInt(prompt('New available copies:'), 10);
+
+    const book = { title, author, genre, year_published, isbn, available_copies };
+
+    fetch(`/updateBook/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
+        body: JSON.stringify(book)
     })
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => displayResult(data));
 }
 
-function deleteItem() {
-    const id = prompt('Enter item ID to delete:');
+function deleteBook() {
+    const id = prompt('Enter book ID to delete:');
     if (!id) return;
-    fetch(`/deleteItem/${id}`, { method: 'DELETE' })
+    fetch(`/deleteBook/${id}`, { method: 'DELETE' })
         .then(res => res.text())
-        .then(data => document.getElementById('result').innerText = data);
+        .then(data => displayResult(data));
+}
+
+function clearBooks() {
+    if (!confirm('Are you sure you want to delete ALL books?')) return;
+    fetch('/clearBooks', { method: 'DELETE' })
+        .then(res => res.text())
+        .then(data => displayResult(data));
+}
+
+function displayResult(content) {
+    document.getElementById('result').innerText = content;
 }
 
