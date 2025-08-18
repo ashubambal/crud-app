@@ -1,10 +1,6 @@
 
-
-
 pipeline {
     agent any
-    
-
     environment {
         SCANNER_HOME = tool 'sonar-scanner'
         SONAR_TOKEN = credentials('sonar-token')
@@ -25,10 +21,7 @@ pipeline {
                 }
             }
         }
-       
-
-        
-      
+             
        stage('Docker Build And Push') {
             steps {
                 script {
@@ -39,19 +32,16 @@ pipeline {
                     }
                 }
             }
-        }
-    
+        }    
        
         stage('Deploy To EC2') {
             steps {
                 script {
                         sh 'docker rm -f $(docker ps -q) || true'
-                        sh 'docker run -d -p 3000:3000 softconsist/crud-123:latest'
-                        
-                    
+                        sh 'docker run -d -p 3000:3000 softconsist/crud-123:latest'               
                 }
             }
         }
         
-}
+     }
 }
