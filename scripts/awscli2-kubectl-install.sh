@@ -13,15 +13,21 @@ sudo apt install unzip -y
 
 # Download and install AWS CLI v2
 echo "Downloading AWS CLI v2..."
-curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"
 
-echo "Unzipping AWS CLI installer..."
-unzip -q awscliv2.zip
+# Go to a safe directory
+cd ~/
 
-echo "Installing AWS CLI v2..."
-sudo ./aws/install
+# Remove old files if they exist
+rm -rf awscliv2.zip aws
 
-echo "AWS CLI v2 installation completed ✅"
+# Download the latest AWS CLI v2
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+# Unzip it
+unzip awscliv2.zip
+
+# Install or update
+sudo ./aws/install --update
 
 # Download the latest version of kubectl
 echo "Downloading latest kubectl release..."
@@ -46,19 +52,3 @@ mv ./kubectl ~/.local/bin/kubectl
 echo "kubectl installation completed ✅"
 kubectl version --client
 
-echo "EKSCTL Installation...."
-
-# for ARM systems, set ARCH to: `arm64`, `armv6` or `armv7`
-ARCH=amd64
-PLATFORM=$(uname -s)_$ARCH
-
-curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
-
-# (Optional) Verify checksum
-curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_checksums.txt" | grep $PLATFORM | sha256sum --check
-
-tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
-
-sudo install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
-
-echo "EKSCTL Installation completed !!"
