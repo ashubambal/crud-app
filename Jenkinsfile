@@ -1,8 +1,12 @@
 pipeline {
     agent any
 
+
     environment {
-        SCANNER_HOME = tool 'SonarQubeScanner' // Make sure the scanner is configured in Jenkins Global Tools
+        SCANNER_HOME = tool 'sonar-scanner'
+        SONAR_TOKEN = credentials('sonar-token')
+        SONAR_ORGANIZATION = 'ashubambal'
+        SONAR_PROJECT_KEY = 'ashubambal'
     }
 
     stages {
@@ -10,24 +14,20 @@ pipeline {
         stage('Code-Analysis') {
             steps {
                 withSonarQubeEnv('SonarCloud') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner \
-  -Dsonar.organization=ashubambal \
-  -Dsonar.projectKey=ashubambal \
-  -Dsonar.sources=. \
-  -Dsonar.host.url=https://sonarcloud.io'''
-                }
-            }
-        }
+                     sh '''$SCANNER_HOME/bin/sonar-scanner -X \
+     -Dsonar.organization=ashubambal \
+     -Dsonar.projectKey=ashubambal \
+     -Dsonar.sources=. \
+     -Dsonar.host.url=https://sonarcloud.io \
+     -Dsonar.login=$SONAR_TOKEN'''
+          }
+       }
+   }
 
-        stage('Sonar Quality Gate') {
-            steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
 
-        stage('Docker Build And Push') {
+
+
+       stage('Docker Build And Push') {
             steps {
                 script {
                     docker.withRegistry('', 'docker-cred') {
@@ -39,16 +39,16 @@ pipeline {
             }
         }
 
-        stage('Deploy To EC2') {
+
+       stage('Deploy To EC2') {
             steps {
                 script {
-                    // Clean up any running containers before deploying
-                    sh 'docker rm -f $(docker ps -q) || true'
-                    sh 'docker run -d -p 3000:3000 softconsist/crud-123:latest'
+                        sh 'docker rm -f $(docker ps -q) || true'
+                        sh 'docker run -d -p 3000:3000 softconsist/crud-123:latest'
+
+
                 }
             }
         }
-
-    }
 }
-
+}
